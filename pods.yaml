@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+spec:
+  minReadySeconds: 30 # minReadySeconds的作用是在Scale up的过程中新创建的pod在本身ready的基础上会再等上minReadySeconds才会认为pod已经是可用状态，然后才会接着开始scale down，相当于一个观察期的作用，防止新起的pod发生crash，进而影响服务的可用性，保证集群在更新过程的稳定性。
+  selector:
+    matchLabels:
+      app: webapp
+  replicas: 2
+  template: # template for the pods
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: richardchesterwood/k8s-fleetman-webapp-angular:release0
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: queue
+  labels:
+    app: queue
+spec:
+  containers:
+  - name: queue
+    image: richardchesterwood/k8s-fleetman-queue:release1
