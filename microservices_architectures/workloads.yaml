@@ -89,6 +89,10 @@ spec:
       containers:
       - name: api-gateway
         image: richardchesterwood/k8s-fleetman-api-gateway:resources
+        readinessProbe: # default is every 10 sec send a get request to check if the app is running successfully
+          httpGet:
+            path: /
+            port: 8080
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: production-microservice
